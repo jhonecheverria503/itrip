@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ColoredSafeArea extends StatelessWidget {
-  const ColoredSafeArea({super.key, required this.child, this.color});
+  const ColoredSafeArea({super.key, required this.child, required this.color});
   final Widget child;
   final Color? color;
 

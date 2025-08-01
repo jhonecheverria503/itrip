@@ -37,6 +37,10 @@ dependencies:
   http: 1.4.0
   cupertino_icons: ^1.0.8
   hive : 2.2.3
+  sqflite: 2.4.2
+  permission_handler: 12.0.1
+  geolocator: 14.0.2
+  google_maps_flutter: 2.12.3
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -66,8 +70,8 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - asset/images/itrip_logo.png
-    - asset/images/beach.png
+    - asset/images/
+   
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

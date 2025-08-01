@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:itrip/use_cases/singleton/session_manager.dart';
 import 'package:itrip/util/colors_app.dart';
 import 'package:itrip/util/constants.dart';
+import 'package:itrip/util/extension/permissions_app.dart';
 
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
@@ -11,26 +12,27 @@ class SplashView extends StatefulWidget {
 }
 
 class _SplashViewState extends State<SplashView> {
-  Future<void> starApp() async {
-    // Simulate a delay for splash screen
-    await Future.delayed(const Duration(seconds: 2));
-    bool sesionGuardada =
-        SessionManager.getInstance().getToken() != null && (SessionManager.getInstance().getToken() ?? "").isNotEmpty;
-
-        if(sesionGuardada){
-          Navigator.of(Constants.navigatorKey.currentContext!).pushReplacementNamed("/home");
-        }else{
-          // Navigate to login view
-          Navigator.of(Constants.navigatorKey.currentContext!).pushReplacementNamed("/login");
-        }
-    // Navigate to login view
-    Navigator.of(Constants.navigatorKey.currentContext!).pushReplacementNamed("/login");
+  Future<void> startApp() async {
+    await PermissionsApp.requestPermission();
+    await Future.delayed(Duration(seconds: 2));
+    bool savedSession =
+        SessionManager.getInstance().getToken() != null &&
+        (SessionManager.getInstance().getToken() ?? "").isNotEmpty;
+    if (savedSession) {
+      Navigator.of(
+        Constants.navigatorKey.currentContext!,
+      ).pushReplacementNamed("/home");
+    } else {
+      Navigator.of(
+        Constants.navigatorKey.currentContext!,
+      ).pushReplacementNamed("/login");
+    }
   }
 
   @override
   void initState() {
-    starApp();
     super.initState();
+    startApp();
   }
 
   @override
@@ -38,12 +40,12 @@ class _SplashViewState extends State<SplashView> {
     return Container(
       color: ColorsApp.primaryColor,
       child: Center(
-        child: 
-        (Image.asset(
-          'asset/images/itrip_logo.png',
+        child: Image.asset(
+          "asset/images/itrip_logo.png",
           width: 200,
-        )),
+          height: 72,
+        ),
       ),
     );
   }
-} 
+}

@@ -1,14 +1,12 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:itrip/ui/widget/common/button_primary.dart';
 import 'package:itrip/ui/widget/common/colored_safe_area.dart';
-import 'package:itrip/ui/widget/login/header.arc.dart';
+import 'package:itrip/ui/widget/common/text_field_primary.dart';
+import 'package:itrip/ui/widget/login/header_arc.dart';
 import 'package:itrip/use_cases/bloc/login_bloc/login_bloc.dart';
 import 'package:itrip/util/colors_app.dart';
-import 'package:http/http.dart' as http;
+import 'package:itrip/util/validator.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -18,9 +16,11 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
-  final GlobalKey<FormState> _keyFom = GlobalKey<FormState>();
-  final TextEditingController _ctrEmail = TextEditingController();
-  final TextEditingController _ctrPassword = TextEditingController();
+  final GlobalKey<FormState> _keyForm = GlobalKey<FormState>();
+  final TextEditingController _ctrlEmail = TextEditingController();
+  final TextEditingController _ctrlPassword = TextEditingController();
+  final Validator _validator = Validator();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +28,7 @@ class _LoginViewState extends State<LoginView> {
         listener: (context, state) {
           if (state is SuccessLoginState) {
             Navigator.of(context).pushReplacementNamed("/home");
-          } 
+          }
         },
         child: ColoredSafeArea(
           color: ColorsApp.primaryColor,
@@ -55,87 +55,51 @@ class _LoginViewState extends State<LoginView> {
                   child: SizedBox(
                     width: MediaQuery.sizeOf(context).width,
                     child: Form(
-                      key: _keyFom,
+                      key: _keyForm,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             "Bienvenido(a) ingresa tus datos",
                             style: TextStyle(
-                              //color: ColorsApp.primaryColor,
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           const SizedBox(height: 16),
-
-                          TextFormField(
-                            controller: _ctrEmail,
+                          TextFieldPrimary(
+                            labelText: "Correo Electronico",
+                            controller: _ctrlEmail,
                             autofillHints: [AutofillHints.newUsername],
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5.0),
-                              ),
-                              //hintText: "Correo Electronico",
-                              labelText: "Correo Electronico",
-                            ),
+                            obscureText: false,
                             keyboardType: TextInputType.emailAddress,
                             textInputAction: TextInputAction.next,
-                            validator: (v) {
-                              if (v != null && v.isNotEmpty) {
-                                if (RegExp(
-                                  r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$",
-                                ).hasMatch(v)) {
-                                  return null;
-                                } else {
-                                  return "El correo no es válido";
-                                }
-                              } else {
-                                return "El correo es requerido";
-                              }
-                            },
+                            validator: _validator.validateEmail,
                           ),
-
-                          const SizedBox(height: 8),
                           const SizedBox(height: 16),
-                          TextFormField(
-                            controller: _ctrPassword,
+                          TextFieldPrimary(
+                            labelText: "Contraseña",
+                            controller: _ctrlPassword,
                             autofillHints: [AutofillHints.password],
                             obscureText: true,
                             textInputAction: TextInputAction.done,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5.0),
-                              ),
-                              //hintText: "Correo Electronico",
-                              labelText: "Contraseña",
-                            ),
-
-                            validator: (v) {
-                              if (v != null && v.isNotEmpty) {
-                                return null;
-                              } else {
-                                return "El correo es requerido";
-                              }
-                            },
+                            validator: _validator.validatePassword,
                           ),
-
                           const SizedBox(height: 16),
                           SizedBox(
                             width: MediaQuery.sizeOf(context).width,
                             child: ButtonPrimary(
+                              text: 'Iniciar Sesión',
                               onClick: () async {
-                                if (_keyFom.currentState!.validate()) {
-                                  // Aquí puedes manejar la lógica de inicio de sesión
+                                if (_keyForm.currentState!.validate()) {
                                   BlocProvider.of<LoginBloc>(context).add(
                                     DoLoginEvent(
-                                      email: _ctrEmail.text,
-                                      password: _ctrPassword.text,
+                                      email: _ctrlEmail.text,
+                                      password: _ctrlPassword.text,
                                     ),
                                   );
                                 }
                               },
-                              text: 'Iniciar Sesión',
                             ),
                           ),
                         ],

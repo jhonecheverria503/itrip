@@ -1,10 +1,8 @@
 import 'package:flutter/widgets.dart';
 
-class BottomArcClipper extends CustomClipper<Path>{
- 
+class BottomArcClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
-    
     final path = Path();
     path.lineTo(0, size.height - 50);
     path.quadraticBezierTo(
@@ -19,5 +17,5 @@ class BottomArcClipper extends CustomClipper<Path>{
   }
 
   @override
-  bool shouldReclip(covariant CustomClipper<Path> oldClipper) =>false;
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
 }
